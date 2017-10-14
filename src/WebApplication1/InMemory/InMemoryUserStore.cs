@@ -9,6 +9,12 @@ using WebApplication1.InMemory.Models;
 
 namespace WebApplication1.InMemory
 {
+    class LoginProviderUserIdRecord
+    {
+        public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
+        public string UserId { get; set; }
+    }
     public class InMemoryUserStore<TUser> :
         IUserStore<TUser>,
         IUserLoginStore<TUser>,
@@ -20,6 +26,7 @@ namespace WebApplication1.InMemory
         IUserLockoutStore<TUser>,
         IUserPhoneNumberStore<TUser> where TUser: MemoryIdentityUser
     {
+        private List<LoginProviderUserIdRecord> LoginProviderUserIdRecords = new List<LoginProviderUserIdRecord>();
         private Dictionary<string, TUser> userMap = new Dictionary<string, TUser>();
         private IList<TUser> userList = new List<TUser>();
         public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
@@ -46,10 +53,6 @@ namespace WebApplication1.InMemory
 
             userMap.Remove(user.Id);
             return IdentityResult.Success;
-        }
-
-        public void Dispose()
-        {     
         }
 
         public async Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
@@ -167,6 +170,8 @@ namespace WebApplication1.InMemory
             {
                 throw new InvalidOperationException("Login already exists.");
             }
+            LoginProviderUserIdRecords.Add(new );
+
 
             user.AddLogin(new MemoryUserLogin(login));
         }
@@ -211,7 +216,7 @@ namespace WebApplication1.InMemory
             return Task.FromResult<IList<UserLoginInfo>>(logins.ToList());
         }
 
-        public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        public async Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
             if (loginProvider == null)
             {
@@ -223,17 +228,14 @@ namespace WebApplication1.InMemory
                 throw new ArgumentNullException(nameof(providerKey));
             }
 
-            var notDeletedQuery = Builders<TUser>.Filter.Eq(u => u.DeletedOn, null);
-            var loginQuery = Builders<TUser>.Filter.ElemMatch(usr => usr.Logins,
-                Builders<MongoUserLogin>.Filter.And(
-                    Builders<MongoUserLogin>.Filter.Eq(lg => lg.LoginProvider, loginProvider),
-                    Builders<MongoUserLogin>.Filter.Eq(lg => lg.ProviderKey, providerKey)
-                )
-            );
+            var query = from item in LoginProviderUserIdRecords
+                where item.LoginProvider == loginProvider && item.ProviderKey == providerKey
+                select item;
 
-            var query = Builders<TUser>.Filter.And(notDeletedQuery, loginQuery);
-
-            return _usersCollection.Find(query).FirstOrDefaultAsync();
+            var record = query.FirstOrDefault();
+            if (record == null)
+                return null;
+            return await FindByIdAsync(record.UserId, cancellationToken);
         }
 
         public Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken)
@@ -694,5 +696,9 @@ namespace WebApplication1.InMemory
 
             return Task.FromResult(0);
         }
+        public void Dispose()
+        {
+        }
+
     }
 }
