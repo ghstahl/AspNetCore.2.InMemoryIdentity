@@ -29,9 +29,9 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSingleton<IUserStore<ApplicationUser>>(provider =>
+            services.AddSingleton<IUserStore<MemoryIdentityUser>>(provider =>
             {
-                return new InMemoryUserStore<ApplicationUser>();
+                return new InMemoryUserStore<MemoryIdentityUser>();
             });
 
             services.AddIdentity<ApplicationUser>(Configuration)
