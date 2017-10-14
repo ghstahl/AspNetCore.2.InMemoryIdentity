@@ -220,7 +220,7 @@ namespace WebApplication1.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser(model.Email, model.Email);
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -275,6 +275,7 @@ namespace WebApplication1.Controllers
             {
                 return RedirectToAction(nameof(Login));
             }
+            /*
             var queryName = (from item in info.Principal.Claims
                 where item.Type == ClaimTypes.Name || item.Type == "name"
                 select item).FirstOrDefault();
@@ -283,7 +284,7 @@ namespace WebApplication1.Controllers
                 select item).FirstOrDefault();
 
 
-            var user = new ApplicationUser { UserName = queryIdentifier.Value, Email = queryName.Value };
+            var user = new ApplicationUser (queryIdentifier.Value, queryName.Value );
             var result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
             {
@@ -296,7 +297,8 @@ namespace WebApplication1.Controllers
                 }
             }
             return RedirectToAction(nameof(Login));
-            /*
+            */
+           
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
@@ -316,7 +318,7 @@ namespace WebApplication1.Controllers
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
             }
-            */
+            
         }
 
         [HttpPost]
@@ -332,7 +334,7 @@ namespace WebApplication1.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser ( model.Email,  model.Email );
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

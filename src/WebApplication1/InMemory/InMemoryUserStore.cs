@@ -142,6 +142,26 @@ namespace WebApplication1.InMemory
             throw new NotSupportedException("Changing the username is not supported.");
         }
 
+        void RemoveLoginProviderRecords(string userId)
+        {
+            var query = from item in LoginProviderUserIdRecords
+                where item.UserId == userId
+                        select item;
+            var  logins = query.ToList();
+            foreach (var item in logins)
+            {
+                LoginProviderUserIdRecords.Remove(item);
+            }
+        }
+
+        void UpdateLoginProviderRecords(TUser user)
+        {
+            RemoveLoginProviderRecords(user.Id);
+            foreach (var login in user.Logins)
+            {
+                LoginProviderUserIdRecords.Add(new LoginProviderUserIdRecord(){LoginProvider = login.LoginProvider,ProviderKey = login.ProviderKey,UserId = user.Id});
+            }
+        }
         public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
         {
             if (user == null)
@@ -149,8 +169,9 @@ namespace WebApplication1.InMemory
                 throw new ArgumentNullException(nameof(user));
             }
 
-
             userMap[user.Id] = user;
+            UpdateLoginProviderRecords(user);
+
             return (IdentityResult.Success);
         }
         
@@ -170,9 +191,7 @@ namespace WebApplication1.InMemory
             {
                 throw new InvalidOperationException("Login already exists.");
             }
-            LoginProviderUserIdRecords.Add(new );
-
-
+          
             user.AddLogin(new MemoryUserLogin(login));
         }
 
@@ -227,15 +246,13 @@ namespace WebApplication1.InMemory
             {
                 throw new ArgumentNullException(nameof(providerKey));
             }
+            
+            var query = from user in userMap
+                where user.Value.Logins.Any(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey)
+                select user.Value;
 
-            var query = from item in LoginProviderUserIdRecords
-                where item.LoginProvider == loginProvider && item.ProviderKey == providerKey
-                select item;
-
-            var record = query.FirstOrDefault();
-            if (record == null)
-                return null;
-            return await FindByIdAsync(record.UserId, cancellationToken);
+            return query.FirstOrDefault();
+           
         }
 
         public Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken)
@@ -313,25 +330,19 @@ namespace WebApplication1.InMemory
             return Task.FromResult(0);
         }
 
-        public Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
+        public async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
         {
             if (claim == null)
             {
                 throw new ArgumentNullException(nameof(claim));
             }
 
-            var notDeletedQuery = Builders<TUser>.Filter.Eq(u => u.DeletedOn, null);
-            var claimQuery = Builders<TUser>.Filter.ElemMatch(usr => usr.Claims,
-                Builders<MongoUserClaim>.Filter.And(
-                    Builders<MongoUserClaim>.Filter.Eq(c => c.ClaimType, claim.Type),
-                    Builders<MongoUserClaim>.Filter.Eq(c => c.ClaimValue, claim.Value)
-                )
-            );
+            var query = from user in userMap
+                where user.Value.Claims.Any(x => x.Equals(claim))
+                select user.Value;
 
-            var query = Builders<TUser>.Filter.And(notDeletedQuery, claimQuery);
-            var users = await _usersCollection.Find(query).ToListAsync().ConfigureAwait(false);
+            return query.ToList();
 
-            return users;
         }
         public Task SetPasswordHashAsync(TUser user, string passwordHash, CancellationToken cancellationToken)
         {
@@ -488,19 +499,18 @@ namespace WebApplication1.InMemory
             return Task.FromResult(0);
         }
 
-        public Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        public async Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
             if (normalizedEmail == null)
             {
                 throw new ArgumentNullException(nameof(normalizedEmail));
             }
 
-            var query = Builders<TUser>.Filter.And(
-                Builders<TUser>.Filter.Eq(u => u.Email.NormalizedValue, normalizedEmail),
-                Builders<TUser>.Filter.Eq(u => u.DeletedOn, null)
-            );
+            var query = from user in userMap
+                where user.Value.Email.NormalizedValue == normalizedEmail
+                select user.Value;
 
-            return _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
+            return query.FirstOrDefault();
         }
 
         public Task<string> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken)
@@ -563,24 +573,13 @@ namespace WebApplication1.InMemory
             return Task.FromResult(0);
         }
 
-        public Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
+        public async Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
-            var filter = Builders<TUser>.Filter.Eq(u => u.Id, user.Id);
-            var update = Builders<TUser>.Update.Inc(usr => usr.AccessFailedCount, 1);
-            var findOneAndUpdateOptions = new FindOneAndUpdateOptions<TUser, int>
-            {
-                ReturnDocument = ReturnDocument.After,
-                Projection = Builders<TUser>.Projection.Expression(usr => usr.AccessFailedCount)
-            };
-
-            var newCount = await _usersCollection
-                .FindOneAndUpdateAsync<int>(filter, update, findOneAndUpdateOptions)
-                .ConfigureAwait(false);
+            var newCount = user.AccessFailedCount + 1;
 
             user.SetAccessFailedCount(newCount);
 

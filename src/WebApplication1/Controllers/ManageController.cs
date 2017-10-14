@@ -57,9 +57,9 @@ namespace WebApplication1.Controllers
             var model = new IndexViewModel
             {
                 Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                IsEmailConfirmed = user.EmailConfirmed,
+                Email = user.Email.NormalizedValue,
+                PhoneNumber = user.PhoneNumber.Value,
+                IsEmailConfirmed = user.Email.IsConfirmed(),
                 StatusMessage = StatusMessage
             };
 
@@ -82,7 +82,7 @@ namespace WebApplication1.Controllers
             }
 
             var email = user.Email;
-            if (model.Email != email)
+            if (model.Email != email.NormalizedValue)
             {
                 var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
                 if (!setEmailResult.Succeeded)
@@ -92,7 +92,7 @@ namespace WebApplication1.Controllers
             }
 
             var phoneNumber = user.PhoneNumber;
-            if (model.PhoneNumber != phoneNumber)
+            if (model.PhoneNumber != phoneNumber.Value)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
@@ -123,7 +123,7 @@ namespace WebApplication1.Controllers
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
             var email = user.Email;
-            await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
+            await _emailSender.SendEmailConfirmationAsync(email.NormalizedValue, callbackUrl);
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToAction(nameof(Index));
@@ -318,7 +318,7 @@ namespace WebApplication1.Controllers
             var model = new TwoFactorAuthenticationViewModel
             {
                 HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                Is2faEnabled = user.TwoFactorEnabled,
+                Is2faEnabled = user.IsTwoFactorEnabled,
                 RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
             };
 
@@ -334,7 +334,7 @@ namespace WebApplication1.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!user.TwoFactorEnabled)
+            if (!user.IsTwoFactorEnabled)
             {
                 throw new ApplicationException($"Unexpected error occured disabling 2FA for user with ID '{user.Id}'.");
             }
@@ -381,7 +381,7 @@ namespace WebApplication1.Controllers
             var model = new EnableAuthenticatorViewModel
             {
                 SharedKey = FormatKey(unformattedKey),
-                AuthenticatorUri = GenerateQrCodeUri(user.Email, unformattedKey)
+                AuthenticatorUri = GenerateQrCodeUri(user.Email.NormalizedValue, unformattedKey)
             };
 
             return View(model);
@@ -451,7 +451,7 @@ namespace WebApplication1.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!user.TwoFactorEnabled)
+            if (!user.IsTwoFactorEnabled)
             {
                 throw new ApplicationException($"Cannot generate recovery codes for user with ID '{user.Id}' as they do not have 2FA enabled.");
             }

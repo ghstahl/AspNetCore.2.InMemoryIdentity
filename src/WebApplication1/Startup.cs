@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using WebApplication1.Data;
+
 using WebApplication1.InMemory;
 using WebApplication1.Models;
 using WebApplication1.Services;
@@ -29,9 +29,9 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSingleton<IUserStore<MemoryIdentityUser>>(provider =>
+            services.AddSingleton<IUserStore<ApplicationUser>>(provider =>
             {
-                return new InMemoryUserStore<MemoryIdentityUser>();
+                return new InMemoryUserStore<ApplicationUser>();
             });
 
             services.AddIdentity<ApplicationUser>(Configuration)
