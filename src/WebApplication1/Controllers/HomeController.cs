@@ -10,6 +10,7 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+
     public class HomeController : Controller
     {
         public IActionResult Index()
@@ -20,8 +21,10 @@ namespace WebApplication1.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
-            return View();
+            var result = HttpContext.User.Claims.Select(
+                c => new ClaimType { Type = c.Type, Value = c.Value });
+            return View(result);
+            
         }
 
         public async Task<IActionResult> Contact()
