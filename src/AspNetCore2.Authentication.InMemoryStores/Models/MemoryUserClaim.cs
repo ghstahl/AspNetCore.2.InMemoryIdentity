@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 
-namespace WebApplication1.InMemory.Models
+namespace AspNetCore2.Authentication.InMemoryStores.Models
 {
     public class MemoryUserClaim : IEquatable<MemoryUserClaim>, IEquatable<Claim>
     {

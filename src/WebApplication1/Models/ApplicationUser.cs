@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using WebApplication1.InMemory;
-using WebApplication1.InMemory.Models;
+using AspNetCore2.Authentication.InMemoryStores;
+using AspNetCore2.Authentication.InMemoryStores.Models;
 
 namespace WebApplication1.Models
 {

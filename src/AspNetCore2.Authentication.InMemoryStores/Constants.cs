@@ -1,7 +1,7 @@
-using System.Runtime.CompilerServices;
+
 
 //[assembly: InternalsVisibleTo("AspNetCore.Identity.MongoDB.Tests")]
-namespace WebApplication1.InMemory
+namespace AspNetCore2.Authentication.InMemoryStores
 {
     internal static class Constants
     {

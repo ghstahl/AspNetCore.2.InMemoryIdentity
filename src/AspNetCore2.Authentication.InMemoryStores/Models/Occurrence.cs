@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace WebApplication1.InMemory.Models
+namespace AspNetCore2.Authentication.InMemoryStores.Models
 {
     public class Occurrence
     {

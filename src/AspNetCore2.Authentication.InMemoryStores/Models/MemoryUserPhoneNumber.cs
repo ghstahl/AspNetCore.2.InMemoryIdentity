@@ -1,4 +1,4 @@
-﻿namespace WebApplication1.InMemory.Models
+﻿namespace AspNetCore2.Authentication.InMemoryStores.Models
 {
     public class MemoryUserPhoneNumber : MemoryUserContactRecord
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace WebApplication1.InMemory.Models
+namespace AspNetCore2.Authentication.InMemoryStores.Models
 {
     public class MemoryUserLogin : IEquatable<MemoryUserLogin>, IEquatable<UserLoginInfo>
     {

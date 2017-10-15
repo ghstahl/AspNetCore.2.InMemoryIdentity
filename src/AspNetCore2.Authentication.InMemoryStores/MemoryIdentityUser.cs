@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using WebApplication1.InMemory.Models;
+using AspNetCore2.Authentication.InMemoryStores.Models;
 
-namespace WebApplication1.InMemory
+namespace AspNetCore2.Authentication.InMemoryStores
 {
     public class MemoryIdentityUser
     {

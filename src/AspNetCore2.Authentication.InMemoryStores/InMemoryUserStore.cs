@@ -5,9 +5,9 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using WebApplication1.InMemory.Models;
+using AspNetCore2.Authentication.InMemoryStores.Models;
 
-namespace WebApplication1.InMemory
+namespace AspNetCore2.Authentication.InMemoryStores
 {
     class LoginProviderUserIdRecord
     {
