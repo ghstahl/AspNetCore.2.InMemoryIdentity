@@ -15,7 +15,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
         {
             if (email != null)
             {
-                Email = new MemoryUserEmail(email);
+                EmailContainer = new MemoryUserEmail(email);
             }
         }
 
@@ -23,34 +23,51 @@ namespace AspNetCore2.Authentication.InMemoryStores
         {
             if (email != null)
             {
-                Email = email;
+                EmailContainer = email;
             }
         }
 
-        public MemoryIdentityUser(string userName)
+        public MemoryIdentityUser(string userName):this()
         {
             if (userName == null)
             {
                 throw new ArgumentNullException(nameof(userName));
             }
 
-            Id = Guid.NewGuid().ToString();
             UserName = userName;
             CreatedOn = new Occurrence();
 
             EnsureClaimsIsSet();
             EnsureLoginsIsSet();
         }
+        public MemoryIdentityUser() { Id = Guid.NewGuid().ToString(); }
 
         public string Id { get; private set; }
-        public string UserName { get; private set; }
+        public string UserName { get;  set; }
         public string NormalizedUserName { get; private set; }
-        public MemoryUserEmail Email { get; private set; }
+        public MemoryUserEmail EmailContainer { get;  set; }
 
-        public MemoryUserPhoneNumber PhoneNumber { get; private set; }
+        public string Email
+        {
+            get { return EmailContainer?.NormalizedValue; }
+            set { SetEmail(value);}
+        }
+
+        public MemoryUserPhoneNumber PhoneNumberContainer { get; private set; }
+        public string PhoneNumber
+        {
+            get { return PhoneNumberContainer?.Value; }
+            set { SetPhoneNumber(value); }
+        }
+
+        public bool EmailConfirmed
+        {
+            get { return EmailContainer == null ? false : EmailContainer.IsConfirmed(); }
+        }
+
         public string PasswordHash { get; private set; }
         public string SecurityStamp { get; private set; }
-        public bool IsTwoFactorEnabled { get; private set; }
+        public bool TwoFactorEnabled { get; private set; }
 
         public IEnumerable<MemoryUserClaim> Claims
         {
@@ -119,12 +136,12 @@ namespace AspNetCore2.Authentication.InMemoryStores
 
         public virtual void EnableTwoFactorAuthentication()
         {
-            IsTwoFactorEnabled = true;
+            TwoFactorEnabled = true;
         }
 
         public virtual void DisableTwoFactorAuthentication()
         {
-            IsTwoFactorEnabled = false;
+            TwoFactorEnabled = false;
         }
 
         public virtual void EnableLockout()
@@ -145,7 +162,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
 
         public virtual void SetEmail(MemoryUserEmail MemoryUserEmail)
         {
-            Email = MemoryUserEmail;
+            EmailContainer = MemoryUserEmail;
         }
 
         public virtual void SetNormalizedUserName(string normalizedUserName)
@@ -166,7 +183,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
 
         public virtual void SetPhoneNumber(MemoryUserPhoneNumber MemoryUserPhoneNumber)
         {
-            PhoneNumber = MemoryUserPhoneNumber;
+            PhoneNumberContainer = MemoryUserPhoneNumber;
         }
 
         public virtual void SetPasswordHash(string passwordHash)

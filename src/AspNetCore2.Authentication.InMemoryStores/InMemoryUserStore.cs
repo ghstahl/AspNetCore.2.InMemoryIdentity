@@ -434,7 +434,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult(user.IsTwoFactorEnabled);
+            return Task.FromResult(user.TwoFactorEnabled);
         }
 
         public Task SetEmailAsync(TUser user, string email, CancellationToken cancellationToken)
@@ -461,7 +461,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var email = (user.Email != null) ? user.Email.Value : null;
+            var email = (user.EmailContainer != null) ? user.EmailContainer.Value : null;
 
             return Task.FromResult(email);
         }
@@ -473,12 +473,12 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (user.Email == null)
+            if (user.EmailContainer == null)
             {
                 throw new InvalidOperationException("Cannot get the confirmation status of the e-mail since the user doesn't have an e-mail.");
             }
 
-            return Task.FromResult(user.Email.IsConfirmed());
+            return Task.FromResult(user.EmailContainer.IsConfirmed());
         }
 
         public Task SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
@@ -488,18 +488,18 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (user.Email == null)
+            if (user.EmailContainer == null)
             {
                 throw new InvalidOperationException("Cannot set the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
             if (confirmed)
             {
-                user.Email.SetConfirmed();
+                user.EmailContainer.SetConfirmed();
             }
             else
             {
-                user.Email.SetUnconfirmed();
+                user.EmailContainer.SetUnconfirmed();
             }
 
             return Task.FromResult(0);
@@ -513,7 +513,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
             }
 
             var query = from user in userMap
-                where user.Value.Email.NormalizedValue == normalizedEmail
+                where user.Value.EmailContainer.NormalizedValue == normalizedEmail
                 select user.Value;
 
             return query.FirstOrDefault();
@@ -526,7 +526,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var normalizedEmail = (user.Email != null) ? user.Email.NormalizedValue : null;
+            var normalizedEmail = (user.EmailContainer != null) ? user.EmailContainer.NormalizedValue : null;
 
             return Task.FromResult(normalizedEmail);
         }
@@ -542,9 +542,9 @@ namespace AspNetCore2.Authentication.InMemoryStores
             // Act cool in this case and gracefully handle.
             // More info: https://github.com/aspnet/Identity/issues/645
 
-            if (normalizedEmail != null && user.Email != null)
+            if (normalizedEmail != null && user.EmailContainer != null)
             {
-                user.Email.SetNormalizedEmail(normalizedEmail);
+                user.EmailContainer.SetNormalizedEmail(normalizedEmail);
             }
 
             return Task.FromResult(0);
@@ -667,7 +667,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult(user.PhoneNumber?.Value);
+            return Task.FromResult(user.PhoneNumberContainer?.Value);
         }
 
         public Task<bool> GetPhoneNumberConfirmedAsync(TUser user, CancellationToken cancellationToken)
@@ -677,12 +677,12 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (user.PhoneNumber == null)
+            if (user.PhoneNumberContainer == null)
             {
                 throw new InvalidOperationException("Cannot get the confirmation status of the phone number since the user doesn't have a phone number.");
             }
 
-            return Task.FromResult(user.PhoneNumber.IsConfirmed());
+            return Task.FromResult(user.PhoneNumberContainer.IsConfirmed());
         }
 
         public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
@@ -692,12 +692,12 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (user.PhoneNumber == null)
+            if (user.PhoneNumberContainer == null)
             {
                 throw new InvalidOperationException("Cannot set the confirmation status of the phone number since the user doesn't have a phone number.");
             }
 
-            user.PhoneNumber.SetConfirmed();
+            user.PhoneNumberContainer.SetConfirmed();
 
             return Task.FromResult(0);
         }
