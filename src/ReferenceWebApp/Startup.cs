@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCore2.Authentication.InMemoryStores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ReferenceWebApp.Data;
 using ReferenceWebApp.Models;
 using ReferenceWebApp.Services;
-
+using ReferenceWebApp.InMemory;
 namespace ReferenceWebApp
 {
     public class Startup
@@ -26,11 +26,12 @@ namespace ReferenceWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<IUserStore<ApplicationUser>>(provider =>
+            {
+                return new InMemoryUserStore<ApplicationUser>();
+            });
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+            services.AddIdentity<ApplicationUser>(Configuration)
                 .AddDefaultTokenProviders();
 
             // Add application services.
