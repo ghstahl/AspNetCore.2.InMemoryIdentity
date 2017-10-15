@@ -9,6 +9,7 @@ namespace WebApplication1.InMemory
     {
         private List<MemoryUserClaim> _claims;
         private List<MemoryUserLogin> _logins;
+        private List<MemoryUserToken> _tokens;
 
         public MemoryIdentityUser(string userName, string email) : this(userName)
         {
@@ -88,6 +89,26 @@ namespace WebApplication1.InMemory
                 }
             }
         }
+        public IEnumerable<MemoryUserToken> Tokens
+        {
+            get
+            {
+                EnsureTokensIsSet();
+                return _tokens;
+            }
+
+            // ReSharper disable once UnusedMember.Local, MemoryDB serialization needs private setters
+            private set
+            {
+                EnsureTokensIsSet();
+                if (value != null)
+                {
+                    _tokens.AddRange(value);
+                }
+            }
+        }
+
+      
 
         public int AccessFailedCount { get; private set; }
         public bool IsLockoutEnabled { get; private set; }
@@ -202,25 +223,42 @@ namespace WebApplication1.InMemory
 
             _claims.Remove(MemoryUserClaim);
         }
-
-        public virtual void AddLogin(MemoryUserLogin MemoryUserLogin)
+        public virtual void AddToken(MemoryUserToken memoryUserToken)
         {
-            if (MemoryUserLogin == null)
+            if (memoryUserToken == null)
             {
-                throw new ArgumentNullException(nameof(MemoryUserLogin));
+                throw new ArgumentNullException(nameof(memoryUserToken));
             }
 
-            _logins.Add(MemoryUserLogin);
+            _tokens.Add(memoryUserToken);
+        }
+        public virtual void RemoveToken(MemoryUserToken memoryUserToken)
+        {
+            if (memoryUserToken == null)
+            {
+                throw new ArgumentNullException(nameof(memoryUserToken));
+            }
+
+            _tokens.Remove(memoryUserToken);
+        }
+        public virtual void AddLogin(MemoryUserLogin memoryUserLogin)
+        {
+            if (memoryUserLogin == null)
+            {
+                throw new ArgumentNullException(nameof(memoryUserLogin));
+            }
+
+            _logins.Add(memoryUserLogin);
         }
 
-        public virtual void RemoveLogin(MemoryUserLogin MemoryUserLogin)
+        public virtual void RemoveLogin(MemoryUserLogin memoryUserLogin)
         {
-            if (MemoryUserLogin == null)
+            if (memoryUserLogin == null)
             {
-                throw new ArgumentNullException(nameof(MemoryUserLogin));
+                throw new ArgumentNullException(nameof(memoryUserLogin));
             }
 
-            _logins.Remove(MemoryUserLogin);
+            _logins.Remove(memoryUserLogin);
         }
 
         public void Delete()
@@ -248,5 +286,14 @@ namespace WebApplication1.InMemory
                 _logins = new List<MemoryUserLogin>();
             }
         }
+        private void EnsureTokensIsSet()
+        {
+            if (_tokens == null)
+            {
+                _tokens = new List<MemoryUserToken>();
+            }
+        }
+
+        
     }
 }

@@ -24,8 +24,14 @@ namespace WebApplication1.InMemory
         IUserTwoFactorStore<TUser>,
         IUserEmailStore<TUser>,
         IUserLockoutStore<TUser>,
+        IUserAuthenticatorKeyStore<TUser>,
+        IUserTwoFactorRecoveryCodeStore<TUser>,
         IUserPhoneNumberStore<TUser> where TUser: MemoryIdentityUser
     {
+        public void Dispose()
+        {
+        }
+
         private List<LoginProviderUserIdRecord> LoginProviderUserIdRecords = new List<LoginProviderUserIdRecord>();
         private Dictionary<string, TUser> userMap = new Dictionary<string, TUser>();
         private IList<TUser> userList = new List<TUser>();
@@ -695,9 +701,93 @@ namespace WebApplication1.InMemory
 
             return Task.FromResult(0);
         }
-        public void Dispose()
+
+        /// <summary>
+        /// Sets the token value for a particular user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="loginProvider">The authentication provider for the token.</param>
+        /// <param name="name">The name of the token.</param>
+        /// <param name="value">The value of the token.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
+        public virtual async Task SetTokenAsync( TUser user, string loginProvider, string name, string value, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var token = user.Tokens.FirstOrDefault(t => t.LoginProvider == loginProvider && t.Name == name);
+            if (token == null)
+            {
+                user.AddToken(new MemoryUserToken(loginProvider, name, value));
+            }
+            else
+            {
+                token.Value = value;
+            }
+        }
+        /// <summary>
+        /// Returns the token value.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="loginProvider">The authentication provider for the token.</param>
+        /// <param name="name">The name of the token.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
+        public async Task<string> GetTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var token = user.Tokens.FirstOrDefault(t => t.LoginProvider == loginProvider && t.Name == name)?.Value;
+            return token;
         }
 
+        private const string InternalLoginProvider = "[AspNetUserStore]";
+        private const string AuthenticatorKeyTokenName = "AuthenticatorKey";
+        private const string RecoveryKeyTokenName = "RecoveryKey";
+        public async Task SetAuthenticatorKeyAsync(TUser user, string key, CancellationToken cancellationToken)
+        {
+            await SetTokenAsync(user, InternalLoginProvider, AuthenticatorKeyTokenName, key, cancellationToken);
+        }
+
+        public async Task<string> GetAuthenticatorKeyAsync(TUser user, CancellationToken cancellationToken)
+        {
+            return await GetTokenAsync(user, InternalLoginProvider, AuthenticatorKeyTokenName, cancellationToken);
+        }
+
+
+        public Task ReplaceCodesAsync(TUser user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken)
+        {
+            var mergedCodes = string.Join(";", recoveryCodes);
+            return SetTokenAsync(user, InternalLoginProvider, RecoveryKeyTokenName, mergedCodes, cancellationToken);
+        }
+
+        public async Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null) { throw new ArgumentNullException(nameof(user)); }
+            if (code == null) { throw new ArgumentNullException(nameof(code)); }
+
+            var mergedCodes = await GetTokenAsync(user, InternalLoginProvider, RecoveryKeyTokenName, cancellationToken) ?? "";
+            var splitCodes = mergedCodes.Split(';');
+            if (splitCodes.Contains(code))
+            {
+                var updatedCodes = new List<string>(splitCodes.Where(s => s != code));
+                await ReplaceCodesAsync(user, updatedCodes, cancellationToken);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null) { throw new ArgumentNullException(nameof(user)); }
+
+            var mergedCodes = await GetTokenAsync(user, InternalLoginProvider, RecoveryKeyTokenName, cancellationToken) ?? "";
+            if (mergedCodes.Length > 0)
+            {
+                return mergedCodes.Split(';').Length;
+            }
+            return 0;
+        }
     }
 }

@@ -58,7 +58,7 @@ namespace WebApplication1.Controllers
             {
                 Username = user.UserName,
                 Email = user.Email.NormalizedValue,
-                PhoneNumber = user.PhoneNumber.Value,
+                PhoneNumber = user.PhoneNumber?.Value,
                 IsEmailConfirmed = user.Email.IsConfirmed(),
                 StatusMessage = StatusMessage
             };
