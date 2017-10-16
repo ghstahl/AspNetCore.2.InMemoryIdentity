@@ -277,7 +277,10 @@ namespace AspNetCore2.Authentication.InMemoryStores
 
             _logins.Remove(memoryUserLogin);
         }
-
+        public virtual void RemoveLogins( )
+        {
+            _logins.Clear();
+        }
         public void Delete()
         {
             if (DeletedOn != null)

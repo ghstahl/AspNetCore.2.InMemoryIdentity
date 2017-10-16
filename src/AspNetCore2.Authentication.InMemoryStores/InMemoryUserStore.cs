@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -9,12 +10,7 @@ using AspNetCore2.Authentication.InMemoryStores.Models;
 
 namespace AspNetCore2.Authentication.InMemoryStores
 {
-    class LoginProviderUserIdRecord
-    {
-        public string LoginProvider { get; set; }
-        public string ProviderKey { get; set; }
-        public string UserId { get; set; }
-    }
+
     public class InMemoryUserStore<TUser> :
         IUserStore<TUser>,
         IUserLoginStore<TUser>,
@@ -32,8 +28,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
         {
         }
 
-        private List<LoginProviderUserIdRecord> LoginProviderUserIdRecords = new List<LoginProviderUserIdRecord>();
-        private Dictionary<string, TUser> userMap = new Dictionary<string, TUser>();
+        private ConcurrentDictionary<string, TUser> _userMap = new ConcurrentDictionary<string, TUser>();
         private IList<TUser> userList = new List<TUser>();
         public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
         {
@@ -44,7 +39,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            userMap[user.Id] = user;
+            _userMap[user.Id] = user;
             return IdentityResult.Success;
         }
 
@@ -56,8 +51,8 @@ namespace AspNetCore2.Authentication.InMemoryStores
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-
-            userMap.Remove(user.Id);
+            TUser rUser;
+            _userMap.TryRemove(user.Id,out rUser);
             return IdentityResult.Success;
         }
 
@@ -71,7 +66,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
             cancellationToken.ThrowIfCancellationRequested();
 
             TUser user;
-            if (userMap.TryGetValue(userId, out user))
+            if (_userMap.TryGetValue(userId, out user))
             {
                 return (user);
             }
@@ -87,7 +82,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var query = from item in userMap
+            var query = from item in _userMap
                 where item.Value.NormalizedUserName == normalizedUserName
                 select item;
 
@@ -148,26 +143,6 @@ namespace AspNetCore2.Authentication.InMemoryStores
             throw new NotSupportedException("Changing the username is not supported.");
         }
 
-        void RemoveLoginProviderRecords(string userId)
-        {
-            var query = from item in LoginProviderUserIdRecords
-                where item.UserId == userId
-                        select item;
-            var  logins = query.ToList();
-            foreach (var item in logins)
-            {
-                LoginProviderUserIdRecords.Remove(item);
-            }
-        }
-
-        void UpdateLoginProviderRecords(TUser user)
-        {
-            RemoveLoginProviderRecords(user.Id);
-            foreach (var login in user.Logins)
-            {
-                LoginProviderUserIdRecords.Add(new LoginProviderUserIdRecord(){LoginProvider = login.LoginProvider,ProviderKey = login.ProviderKey,UserId = user.Id});
-            }
-        }
         public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
         {
             if (user == null)
@@ -175,9 +150,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(user));
             }
 
-            userMap[user.Id] = user;
-            UpdateLoginProviderRecords(user);
-
+            _userMap[user.Id] = user;
             return (IdentityResult.Success);
         }
         
@@ -253,7 +226,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(providerKey));
             }
             
-            var query = from user in userMap
+            var query = from user in _userMap
                 where user.Value.Logins.Any(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey)
                 select user.Value;
 
@@ -343,7 +316,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(claim));
             }
 
-            var query = from user in userMap
+            var query = from user in _userMap
                 where user.Value.Claims.Any(x => x.Equals(claim))
                 select user.Value;
 
@@ -512,7 +485,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
                 throw new ArgumentNullException(nameof(normalizedEmail));
             }
 
-            var query = from user in userMap
+            var query = from user in _userMap
                 where user.Value.EmailContainer.NormalizedValue == normalizedEmail
                 select user.Value;
 
