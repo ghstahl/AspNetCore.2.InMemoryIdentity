@@ -17,7 +17,7 @@ I have always been an enterprise developer, so the user database was always a di
 
 You can still use the InMemoryUserStore in production.  Even at scale.  Its there to trick the identity framework to do what it wants to do.
 
-# [External Identity Reference](src/ReferenceWebApp.ExternalIdentity)
+[External Identity Reference](src/ReferenceWebApp.ExternalIdentity)
 
 This project removed everything that has to do with management.  It only assumes that you will have an external OIDC provider, like Google.
 
