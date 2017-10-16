@@ -227,7 +227,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
             {
                 throw new ArgumentNullException(nameof(MemoryUserClaim));
             }
-
+            EnsureClaimsIsSet();
             _claims.Add(MemoryUserClaim);
         }
 
@@ -237,7 +237,7 @@ namespace AspNetCore2.Authentication.InMemoryStores
             {
                 throw new ArgumentNullException(nameof(MemoryUserClaim));
             }
-
+            EnsureClaimsIsSet();
             _claims.Remove(MemoryUserClaim);
         }
         public virtual void AddToken(MemoryUserToken memoryUserToken)
