@@ -92,3 +92,15 @@ public async Task<IActionResult> About()
     return View(result);
 }
 ```
+
+# Credits
+[AspNetCore.Identity.MongoDB](https://github.com/tugberkugurlu/AspNetCore.Identity.MongoDB)  
+I shamelessly copied this project as a starter.  
+
+[aspnetboilerplate](https://aspnetboilerplate.com/)  
+I copied some of their userstore methods to augment missing intergaces from the MongoDB implementation.
+```
+src/Abp.Zero/Authorization/Users/AbpUserStore.cs
+```
+
+
