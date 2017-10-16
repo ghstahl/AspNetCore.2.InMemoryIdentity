@@ -8,3 +8,87 @@ Baseline app that has in inmemory identity store.
 
 ## Integration
 [integrated](https://github.com/ghstahl/AspNetCore.2.InMemoryIdentity/commit/4084780864095c4c54789d385c6c2a3fe7fce2b0#diff-f03d32421dcf0fffab0ddc6e1c8a0986)
+
+# Obvious stuff
+This is meant for development.  The user store disappears when you restart the webapp.
+
+# In Production
+I have always been an enterprise developer, so the user database was always a different service.  No databases.  No need for any of the identity services, like 2FA, password reset, email verification, etc.   Too bad for me, because it is really well done and really cool.
+
+You can still use the InMemoryUserStore in production.  Even at scale.  Its there to trick the identity framework to do what it wants to do.
+
+# [External Identity Reference](src/ReferenceWebApp.ExternalIdentity)
+
+This project removed everything that has to do with management.  It only assumes that you will have an external OIDC provider, like Google.
+
+The technique is actually pretty simple.  Use the InMemoryUserStore as a temporary storage service until signin.  Then delete the user.
+It basically makes the app think we have the full identity framework.  The InMemoryUserStore is overkill for this, but who cares, it is just dead code for this case.
+
+```
+[HttpGet]
+[AllowAnonymous]
+public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+{
+    if (remoteError != null)
+    {
+        ErrorMessage = $"Error from external provider: {remoteError}";
+        return RedirectToAction(nameof(Login));
+    }
+    var info = await _signInManager.GetExternalLoginInfoAsync();
+    if (info == null)
+    {
+        return RedirectToAction(nameof(Login));
+    }
+
+    var query = from claim in info.Principal.Claims
+        where claim.Type == ClaimTypes.Name || claim.Type == "name"
+        select claim;
+    var queryNameId = from claim in info.Principal.Claims
+        where claim.Type == ClaimTypes.NameIdentifier
+        select claim;
+    var nameClaim = query.FirstOrDefault();
+    var nameIdClaim = queryNameId.FirstOrDefault();
+
+    // paranoid
+    var leftoverUser = await _userManager.FindByEmailAsync(nameClaim.Value);
+    if (leftoverUser != null)
+    {
+        await _userManager.DeleteAsync(leftoverUser); // just using this inMemory userstore as a scratch holding pad
+    }
+    // paranoid end
+
+    var user = new ApplicationUser { UserName = nameIdClaim.Value, Email = nameClaim.Value };
+    var result = await _userManager.CreateAsync(user);
+    var newUser = await _userManager.FindByIdAsync(user.Id);
+    await _userManager.AddClaimAsync(newUser, new Claim("custom-name", nameClaim.Value));
+    if (result.Succeeded)
+    {
+        await _signInManager.SignInAsync(user, isPersistent: false);
+        await _userManager.DeleteAsync(user); // just using this inMemory userstore as a scratch holding pad
+        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+        return RedirectToLocal(returnUrl);
+
+    }
+    return RedirectToAction(nameof(Login));
+}
+```
+later on, you can get the oidc stuff as normal.
+```
+public async Task<IActionResult> About()
+{
+    ViewData["Message"] = "Your application description page.";
+    var result = HttpContext.User.Claims.Select(
+        c => new ClaimType { Type = c.Type, Value = c.Value });
+
+    if (User.Identity.IsAuthenticated)
+    {
+        string accessToken = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "access_token");
+        string idToken = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "id_token");
+
+        // Now you can use them. For more info on when and how to use the 
+        // access_token and id_token, see https://auth0.com/docs/tokens
+    }
+
+    return View(result);
+}
+```
