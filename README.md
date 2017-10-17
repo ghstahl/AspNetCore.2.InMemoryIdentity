@@ -9,6 +9,17 @@ Baseline app that has in inmemory identity store.
 ## Integration
 [integrated](https://github.com/ghstahl/AspNetCore.2.InMemoryIdentity/commit/4084780864095c4c54789d385c6c2a3fe7fce2b0#diff-f03d32421dcf0fffab0ddc6e1c8a0986)
 
+I chose to use bring in Google as a stock OpenIdentityConnect provider, and all you just need to add the following to your secrets.json via "Manage User Secrets"
+
+```
+{
+  "Google-ClientId": "{blah}.apps.googleusercontent.com",
+  "Google-ClientSecret": "{another blah}",
+}
+
+```
+[Google OpenId Connect](https://developers.google.com/identity/protocols/OpenIDConnect)  
+
 # Obvious stuff
 This is meant for development.  The user store disappears when you restart the webapp.  
 
