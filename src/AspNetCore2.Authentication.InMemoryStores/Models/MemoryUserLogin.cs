@@ -1,39 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace AspNetCore2.Authentication.InMemoryStores.Models
 {
-    public class MemoryUserLogin : IEquatable<MemoryUserLogin>, IEquatable<UserLoginInfo>
+    /// <summary>
+    ///     Entity type for a user's login (i.e. facebook, google)
+    /// </summary>
+    public class MemoryUserLogin : MemoryUserLogin<string>
     {
-        public MemoryUserLogin(UserLoginInfo loginInfo)
-        {
-            if (loginInfo == null)
-            {
-                throw new ArgumentNullException(nameof(loginInfo));
-            }
+    }
 
-            LoginProvider = loginInfo.LoginProvider;
-            ProviderKey = loginInfo.ProviderKey;
-            ProviderDisplayName = loginInfo.ProviderDisplayName;
-        }
+    /// <summary>
+    ///     Entity type for a user's login (i.e. facebook, google)
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    public class MemoryUserLogin<TKey> where TKey : IEquatable<TKey>
+    {
+        /// <summary>
+        ///     The login provider for the login (i.e. facebook, google)
+        /// </summary>
+        public virtual string LoginProvider { get; set; }
 
-        public string LoginProvider { get; private set; }
-        public string ProviderKey { get; private set; }
-        public string ProviderDisplayName { get; private set; }
+        /// <summary>
+        ///     Key representing the login for the provider
+        /// </summary>
+        public virtual string ProviderKey { get; set; }
 
-        public bool Equals(MemoryUserLogin other)
-        {
-            return other.LoginProvider.Equals(LoginProvider)
-                   && other.ProviderKey.Equals(ProviderKey);
-        }
+        /// <summary>
+        ///     Display name for the login
+        /// </summary>
+        public virtual string ProviderDisplayName { get; set; }
 
-        public bool Equals(UserLoginInfo other)
-        {
-            return other.LoginProvider.Equals(LoginProvider)
-                   && other.ProviderKey.Equals(ProviderKey);
-        }
+        /// <summary>
+        ///     User Id for the user who owns this login
+        /// </summary>
+        public virtual TKey UserId { get; set; }
     }
 }

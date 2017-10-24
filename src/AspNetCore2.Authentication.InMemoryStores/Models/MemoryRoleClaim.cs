@@ -3,14 +3,15 @@
 namespace AspNetCore2.Authentication.InMemoryStores.Models
 {
     /// <summary>
-    ///     EntityType that represents one specific user claim
+    ///     EntityType that represents one specific role claim
     /// </summary>
-    public class MemoryUserClaim : MemoryUserClaim<string> { }
+    public class MemoryRoleClaim : MemoryRoleClaim<string> { }
+
     /// <summary>
-    ///     EntityType that represents one specific user claim
+    ///     EntityType that represents one specific role claim
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
-    public class MemoryUserClaim<TKey> where TKey : IEquatable<TKey>
+    public class MemoryRoleClaim<TKey> where TKey : IEquatable<TKey>
     {
         /// <summary>
         ///     Primary key
@@ -18,9 +19,9 @@ namespace AspNetCore2.Authentication.InMemoryStores.Models
         public virtual int Id { get; set; }
 
         /// <summary>
-        ///     User Id for the user who owns this claim
+        ///     User Id for the role this claim belongs to
         /// </summary>
-        public virtual TKey UserId { get; set; }
+        public virtual TKey RoleId { get; set; }
 
         /// <summary>
         ///     Claim type

@@ -26,9 +26,15 @@ namespace ReferenceWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var inMemoryStore = new InMemoryStore<ApplicationUser, ApplicationRole>();
+
             services.AddSingleton<IUserStore<ApplicationUser>>(provider =>
             {
-                return new InMemoryUserStore<ApplicationUser>();
+                return inMemoryStore;
+            });
+            services.AddSingleton<IUserRoleStore<ApplicationUser>>(provider =>
+            {
+                return inMemoryStore;
             });
 
             services.AddIdentity<ApplicationUser>(Configuration)
