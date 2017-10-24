@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceWebApp", "Referenc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceWebApp.ExternalIdentity", "ReferenceWebApp.ExternalIdentity\ReferenceWebApp.ExternalIdentity.csproj", "{97CF936E-9AB3-40B7-9EDF-5E71F5FC6BDD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P7.AspNetCore.Identity.InMemory", "P7.AspNetCore.Identity.InMemory\P7.AspNetCore.Identity.InMemory.csproj", "{0E19999A-23A3-4ADB-A727-36D8818CDE36}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{97CF936E-9AB3-40B7-9EDF-5E71F5FC6BDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97CF936E-9AB3-40B7-9EDF-5E71F5FC6BDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97CF936E-9AB3-40B7-9EDF-5E71F5FC6BDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E19999A-23A3-4ADB-A727-36D8818CDE36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E19999A-23A3-4ADB-A727-36D8818CDE36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E19999A-23A3-4ADB-A727-36D8818CDE36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E19999A-23A3-4ADB-A727-36D8818CDE36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
