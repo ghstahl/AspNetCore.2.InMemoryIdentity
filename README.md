@@ -109,7 +109,7 @@ public async Task<IActionResult> About()
 ```
 
 # Credits
-[AspNetCore.Identity.MongoDB](https://github.com/tugberkugurlu/AspNetCore.Identity.MongoDB)  
+[https://github.com/aspnet/Identity  ... test/Microsoft.AspNetCore.Identity.InMemory.Test](https://github.com/aspnet/Identity/tree/24d4694ec5f8aa8c83d340b51ac11a7925a33061/test/Microsoft.AspNetCore.Identity.InMemory.Test)  
 I shamelessly copied this project as a starter.  
 
 [aspnetboilerplate](https://aspnetboilerplate.com/)  
