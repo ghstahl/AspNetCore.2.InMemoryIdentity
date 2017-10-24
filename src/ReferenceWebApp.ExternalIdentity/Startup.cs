@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using ReferenceWebApp.Models;
 using ReferenceWebApp.Services;
 using ReferenceWebApp.InMemory;
@@ -36,10 +38,21 @@ namespace ReferenceWebApp
             {
                 return inMemoryStore;
             });
-
-            services.AddIdentity<ApplicationUser>(Configuration)
+            services.AddSingleton<IRoleStore<ApplicationRole>>(provider =>
+            {
+                return inMemoryStore;
+            });
+            services.AddIdentity<ApplicationUser,ApplicationRole>()
                 .AddDefaultTokenProviders();
+            services.AddAuthentication<ApplicationUser>(Configuration);
 
+            services
+                .AddScoped
+                <Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
+                    AppClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>();
+
+            // Hosting doesn't add IHttpContextAccessor by default
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 

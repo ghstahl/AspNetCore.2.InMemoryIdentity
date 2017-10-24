@@ -36,8 +36,18 @@ namespace ReferenceWebApp
             {
                 return inMemoryStore;
             });
-            services.AddIdentity<ApplicationUser>(Configuration)
+            services.AddSingleton<IRoleStore<ApplicationRole>>(provider =>
+            {
+                return inMemoryStore;
+            });
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddDefaultTokenProviders();
+            services.AddAuthentication<ApplicationUser>(Configuration);
+
+            services
+                .AddScoped
+                <Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
+                    AppClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>();
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();

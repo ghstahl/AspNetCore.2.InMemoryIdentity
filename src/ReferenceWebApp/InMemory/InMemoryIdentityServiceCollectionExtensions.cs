@@ -13,10 +13,10 @@ namespace ReferenceWebApp.InMemory
 {
     public static class InMemoryIdentityServiceCollectionExtensions
     {
-        public static IdentityBuilder AddIdentity<TUser>(this IServiceCollection services, IConfiguration configuration)
-            where TUser : class => services.AddIdentity<TUser>(configuration,null);
+        public static IdentityBuilder AddAuthentication<TUser>(this IServiceCollection services, IConfiguration configuration)
+            where TUser : class => services.AddAuthentication<TUser>(configuration,null);
 
-        public static IdentityBuilder AddIdentity<TUser>(this IServiceCollection services, IConfiguration configuration,Action<IdentityOptions> setupAction)
+        public static IdentityBuilder AddAuthentication<TUser>(this IServiceCollection services, IConfiguration configuration,Action<IdentityOptions> setupAction)
             where TUser : class
         {
             // Services used by identity
@@ -25,7 +25,8 @@ namespace ReferenceWebApp.InMemory
                     options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
                     options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
                     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-                })
+                });
+            /*
                 .AddCookie(IdentityConstants.ApplicationScheme, o =>
                 {
                     o.LoginPath = new PathString("/Account/Login");
@@ -46,6 +47,7 @@ namespace ReferenceWebApp.InMemory
                     o.Cookie.Name = IdentityConstants.TwoFactorUserIdScheme;
                     o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
                 });
+                */
             if (!(string.IsNullOrEmpty(configuration["Google-ClientId"]) ||
                   string.IsNullOrEmpty(configuration["Google-ClientSecret"])))
             {
@@ -80,6 +82,7 @@ namespace ReferenceWebApp.InMemory
 
                     });
             }
+            /*
             // Hosting doesn't add IHttpContextAccessor by default
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -100,7 +103,7 @@ namespace ReferenceWebApp.InMemory
             {
                 services.Configure(setupAction);
             }
-
+            */
             return new IdentityBuilder(typeof(TUser), services);
         }
     }
