@@ -68,6 +68,18 @@ namespace ReferenceWebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        public IActionResult ExternalLoginWhatIf(string provider, string returnUrl = null)
+        {
+            // Request a redirect to the external login provider.
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            var challeng = Challenge(properties, provider);
+            Response.Headers.Add("convert-302-to-200", "true");
+            return challeng;
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
@@ -75,6 +87,7 @@ namespace ReferenceWebApp.Controllers
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             var challeng = Challenge(properties, provider);
+            Response.Headers.Add("hide-302","true");
             return challeng;
         }
 

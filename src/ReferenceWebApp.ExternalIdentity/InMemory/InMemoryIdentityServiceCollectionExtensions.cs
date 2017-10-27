@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using P7.AspNetCore.Authentication.OpenIdConnect;
 
 namespace ReferenceWebApp.InMemory
 {
@@ -51,7 +52,7 @@ namespace ReferenceWebApp.InMemory
             if (!(string.IsNullOrEmpty(configuration["Google-ClientId"]) ||
                   string.IsNullOrEmpty(configuration["Google-ClientSecret"])))
             {
-                authenticationBuilder.AddOpenIdConnect(GoogleDefaults.AuthenticationScheme, GoogleDefaults.DisplayName,
+                authenticationBuilder.P7AddOpenIdConnect(GoogleDefaults.AuthenticationScheme, GoogleDefaults.DisplayName,
                     o =>
                     {
                         var googleOpenIdConnectOptions = new GoogleOpenIdConnectOptions();
@@ -65,11 +66,12 @@ namespace ReferenceWebApp.InMemory
                         o.GetClaimsFromUserInfoEndpoint = googleOpenIdConnectOptions.GetClaimsFromUserInfoEndpoint;
                         o.SaveTokens = googleOpenIdConnectOptions.SaveTokens;
 
-                        o.Events = new OpenIdConnectEvents()
+                        o.Events = new P7.AspNetCore.Authentication.OpenIdConnect.Events.OpenIdConnectEvents()
                         {
                             OnRedirectToIdentityProvider = (context) =>
                             {
                                 if (context.Request.Path != "/Account/ExternalLogin"
+                                    && context.Request.Path != "/Account/ExternalLoginWhatIf"
                                     && context.Request.Path != "/Manage/LinkLogin")
                                 {
                                     context.Response.Redirect("/account/login");

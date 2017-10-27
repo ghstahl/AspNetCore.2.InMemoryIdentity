@@ -27,7 +27,9 @@ namespace ReferenceWebApp.InMemory
             {
                 OnRedirectToIdentityProvider = (context) =>
                 {
-                    if (context.Request.Path != "/Account/ExternalLogin")
+                    
+                    if (context.Request.Path != "/Account/ExternalLogin" &&
+                        context.Request.Path != "/Account/ExternalLoginWhatIf")
                     {
                         context.Response.Redirect("/account/login");
                         context.HandleResponse();

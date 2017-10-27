@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using ReferenceWebApp.Models;
 using ReferenceWebApp.Services;
 using ReferenceWebApp.InMemory;
+using ReferenceWebApp.Middleware;
+
 namespace ReferenceWebApp
 {
     public class Startup
@@ -62,6 +64,8 @@ namespace ReferenceWebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseMiddleware<LogResponseMiddleware>();
+            app.UseMiddleware<LogRequestMiddleware>();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

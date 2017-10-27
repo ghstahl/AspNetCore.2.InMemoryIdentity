@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AspNetCore2.Authentication.InMemoryStores\AspNetCore2.Authentication.InMemoryStores.csproj" />
+    <ProjectReference Include="..\P7.AspNetCore.Authentication.OpenIdConnect\P7.AspNetCore.Authentication.OpenIdConnect.csproj" />
   </ItemGroup>
 
 </Project>
