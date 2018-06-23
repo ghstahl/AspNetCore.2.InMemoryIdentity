@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A87AC2CD-BCB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetIdentityWebApp", "AspNetIdentityWebApp\AspNetIdentityWebApp.csproj", "{D244C1C4-21B4-4261-9851-A5E2EC908A59}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetIdentityWebApp.NoUserDatabase", "AspNetIdentityWebApp.NoUserDatabase\AspNetIdentityWebApp.NoUserDatabase.csproj", "{9026B796-3013-413D-8F01-C0FC4C862C0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{D244C1C4-21B4-4261-9851-A5E2EC908A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D244C1C4-21B4-4261-9851-A5E2EC908A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D244C1C4-21B4-4261-9851-A5E2EC908A59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9026B796-3013-413D-8F01-C0FC4C862C0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9026B796-3013-413D-8F01-C0FC4C862C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9026B796-3013-413D-8F01-C0FC4C862C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9026B796-3013-413D-8F01-C0FC4C862C0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{90E4C8D7-0C80-4D65-9040-7FA6850DD56B} = {A87AC2CD-BCB2-473D-A902-11692043342D}
 		{D244C1C4-21B4-4261-9851-A5E2EC908A59} = {A87AC2CD-BCB2-473D-A902-11692043342D}
+		{9026B796-3013-413D-8F01-C0FC4C862C0B} = {A87AC2CD-BCB2-473D-A902-11692043342D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {83710514-CD72-4060-8B41-C487F15267AB}
