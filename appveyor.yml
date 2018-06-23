@@ -27,5 +27,5 @@ build:
 after_build:
 - cmd: dotnet pack /p:PackageVersion=%appveyor_build_version% ./src/AspNetCore2.Authentication.InMemoryStores.sln
 artifacts:
-- path: '**\IdentityServer4.*.nupkg'
+- path: '**\Identity.*.nupkg'
   name: AspNetCore2.Authentication.InMemoryStores
