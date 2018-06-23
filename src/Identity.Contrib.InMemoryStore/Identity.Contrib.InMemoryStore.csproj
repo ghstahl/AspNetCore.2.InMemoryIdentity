@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Microsoft.AspNetCore.Identity</RootNamespace>
+    <Authors>ghstahl</Authors>
+    <Copyright>Copyright ghstahl 2018</Copyright>
+    <PackageProjectUrl>https://github.com/ghstahl/AspNetCore.2.InMemoryIdentity</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/ghstahl/AspNetCore.2.InMemoryIdentity/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>Identity</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.1" />
+  </ItemGroup>
+
+</Project>

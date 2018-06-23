@@ -1,4 +1,6 @@
-﻿using AspNetCore2.Authentication.InMemoryStores.Models;
+﻿
+
+using Microsoft.AspNetCore.Identity;
 
 namespace ReferenceWebApp.Models
 {

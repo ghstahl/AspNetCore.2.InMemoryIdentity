@@ -1,6 +1,6 @@
 using System;
 
-namespace AspNetCore2.Authentication.InMemoryStores.Models
+namespace Microsoft.AspNetCore.Identity
 {
     /// <summary>
     ///     Entity type for a user's login (i.e. facebook, google)

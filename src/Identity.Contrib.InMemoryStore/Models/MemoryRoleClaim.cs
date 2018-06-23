@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCore2.Authentication.InMemoryStores.Models
+namespace Microsoft.AspNetCore.Identity
 {
     /// <summary>
     ///     EntityType that represents one specific role claim

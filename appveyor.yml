@@ -1,0 +1,31 @@
+version: 1.0.0-alpha-{build}
+image: Visual Studio 2017
+configuration: Release
+init:
+    - cmd: git config --global core.autocrlf true
+dotnet_csproj:
+  patch:  true
+  file: '**\*.csproj'
+  version:  '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+install:
+- cmd: appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/v4.0.0/nuget.exe
+nuget:
+  account_feed: true
+  project_feed: true
+before_build:
+- cmd: >-
+    dotnet --version
+
+    dotnet restore ./src/AspNetCore2.Authentication.InMemoryStores.sln --verbosity m
+build:
+  project: ./src/AspNetCore2.Authentication.InMemoryStores.sln
+  verbosity: minimal
+after_build:
+- cmd: dotnet pack /p:PackageVersion=%appveyor_build_version% ./src/AspNetCore2.Authentication.InMemoryStores.sln
+artifacts:
+- path: '**\IdentityServer4.*.nupkg'
+  name: AspNetCore2.Authentication.InMemoryStores

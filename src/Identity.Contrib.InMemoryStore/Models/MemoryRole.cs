@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AspNetCore2.Authentication.InMemoryStores.Models
+namespace Microsoft.AspNetCore.Identity
 {
     /// <summary>
     ///     Represents a Role entity

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using AspNetCore2.Authentication.InMemoryStores.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace AspNetCore2.Authentication.InMemoryStores
+namespace Microsoft.AspNetCore.Identity
 {
     public class InMemoryStore<TUser, TRole> :
         IUserLoginStore<TUser>,
