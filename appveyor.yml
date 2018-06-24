@@ -29,3 +29,7 @@ after_build:
 artifacts:
 - path: '**\Identity.*.nupkg'
   name: AspNetCore2.Authentication.InMemoryStores
+deploy:
+- provider: NuGet
+  api_key:
+    secure: B/f51VFX8VlPydPBC8o0fhaoDnDY/nFwXF8rWtCaGSbjTs3iWh7nY6geUynibgJs
