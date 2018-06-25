@@ -30,12 +30,14 @@ namespace Microsoft.AspNetCore.Identity
     ///     Represents a Role entity
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
-    public class MemoryRole<TKey> where TKey : IEquatable<TKey>
+    public class MemoryRole<TKey> : IdentityRole where TKey : IEquatable<TKey>
     {
         /// <summary>
         ///     Constructor
         /// </summary>
-        public MemoryRole() { }
+        public MemoryRole()
+        {
+        }
 
         /// <summary>
         ///     Constructor
@@ -47,28 +49,10 @@ namespace Microsoft.AspNetCore.Identity
         }
 
         /// <summary>
-        ///     Role id
-        /// </summary>
-        public virtual TKey Id { get; set; }
-
-        /// <summary>
         /// Navigation property for claims in the role
         /// </summary>
-        public virtual ICollection<MemoryRoleClaim<TKey>> Claims { get; private set; } = new List<MemoryRoleClaim<TKey>>();
+        public virtual ICollection<MemoryRoleClaim<TKey>> Claims { get; private set; } =
+            new List<MemoryRoleClaim<TKey>>();
 
-        /// <summary>
-        ///     Role name
-        /// </summary>
-        public virtual string Name { get; set; }
-
-        /// <summary>
-        /// Normalized name used for equality
-        /// </summary>
-        public virtual string NormalizedName { get; set; }
-
-        /// <summary>
-        /// A random value that should change whenever a role is persisted to the store
-        /// </summary>
-        public virtual string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
     }
 }
