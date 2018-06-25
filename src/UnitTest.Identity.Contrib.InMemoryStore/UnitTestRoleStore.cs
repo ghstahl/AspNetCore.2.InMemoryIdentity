@@ -11,7 +11,7 @@ namespace UnitTest.Identity.Contrib.InMemoryStore
     [TestClass]
     public class UnitTestRoleStore: UnitTestRoleStore<ApplicationRole>
     {
-        public UnitTestRoleStore() : base(UserRoleTestFactory.SingletonUserRoleTestFactory)
+        public UnitTestRoleStore() : base(HostContainer.ServiceProvider.GetService<IRoleTestFactory<ApplicationRole>>())
         {
         }
     }

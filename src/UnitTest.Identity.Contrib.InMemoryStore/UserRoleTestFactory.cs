@@ -28,16 +28,9 @@ namespace UnitTest.Identity.Contrib.InMemoryStore
         IUserTestFactory<ApplicationUser>,
         IUserRoleTestFactory<ApplicationUser>
     {
-        private static UserRoleTestFactory _userRoleTestFactory;
-
-        public static UserRoleTestFactory SingletonUserRoleTestFactory => _userRoleTestFactory ?? (_userRoleTestFactory = new UserRoleTestFactory());
-
-       
-
-        public HostContainer HostContainer { get; }
         public UserRoleTestFactory()
         {
-            HostContainer = new HostContainer();
+            
         }
         public ApplicationRole CreateRole()
         {
