@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AspNetIdentityWebApp.InMemory;
 using AspNetIdentityWebApp.Services;
+using Microsoft.AspNetCore.Identity.Extensions;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace AspNetIdentityWebApp
@@ -36,22 +37,8 @@ namespace AspNetIdentityWebApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var inMemoryStore = new InMemoryStore<ApplicationUser, ApplicationRole>();
+            services.AddInMemoryIdentity<ApplicationUser, ApplicationRole>().AddDefaultTokenProviders();
 
-            services.AddSingleton<IUserStore<ApplicationUser>>(provider =>
-            {
-                return inMemoryStore;
-            });
-            services.AddSingleton<IUserRoleStore<ApplicationUser>>(provider =>
-            {
-                return inMemoryStore;
-            });
-            services.AddSingleton<IRoleStore<ApplicationRole>>(provider =>
-            {
-                return inMemoryStore;
-            });
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddDefaultTokenProviders();
             services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = $"{Configuration["applicationName"]}.AspNetCore.Identity.Application";
             });
