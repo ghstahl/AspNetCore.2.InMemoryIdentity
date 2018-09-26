@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Contrib.InMemoryStore", "Identity.Contrib.InMemoryStore\Identity.Contrib.InMemoryStore.csproj", "{90E4C8D7-0C80-4D65-9040-7FA6850DD56B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Contrib.InMemoryStore", "Identity.Contrib.InMemoryStore\Identity.Contrib.InMemoryStore.csproj", "{90E4C8D7-0C80-4D65-9040-7FA6850DD56B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F2CBE7F3-C1D7-470E-96DE-0340D45A57CC}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,15 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F2CBE7F3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A87AC2CD-BCB2-473D-A902-11692043342D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetIdentityWebApp", "AspNetIdentityWebApp\AspNetIdentityWebApp.csproj", "{D244C1C4-21B4-4261-9851-A5E2EC908A59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetIdentityWebApp", "AspNetIdentityWebApp\AspNetIdentityWebApp.csproj", "{D244C1C4-21B4-4261-9851-A5E2EC908A59}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetIdentityWebApp.NoUserDatabase", "AspNetIdentityWebApp.NoUserDatabase\AspNetIdentityWebApp.NoUserDatabase.csproj", "{9026B796-3013-413D-8F01-C0FC4C862C0B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{90C4898E-2D7E-4DFB-A5EC-26EAA82C5611}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Identity.Contrib.InMemoryStore", "UnitTest.Identity.Contrib.InMemoryStore\UnitTest.Identity.Contrib.InMemoryStore.csproj", "{EF54FF63-BF06-4C04-84AC-0B5F37B3F065}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Identity.Contrib.InMemoryStore", "UnitTest.Identity.Contrib.InMemoryStore\UnitTest.Identity.Contrib.InMemoryStore.csproj", "{EF54FF63-BF06-4C04-84AC-0B5F37B3F065}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Contrib.CoreTests", "Identity.Contrib.CoreTests\Identity.Contrib.CoreTests.csproj", "{2D7DEC50-2ADC-4293-9D10-4F0B5DC66186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Contrib.CoreTests", "Identity.Contrib.CoreTests\Identity.Contrib.CoreTests.csproj", "{2D7DEC50-2ADC-4293-9D10-4F0B5DC66186}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
