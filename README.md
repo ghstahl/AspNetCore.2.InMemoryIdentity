@@ -1,6 +1,9 @@
 # AspNetCore.2.InMemoryIdentity
 Baseline app that has in inmemory identity store.  
 
+# Nuget Repo
+[Identity.Contrib.InMemoryStore](https://www.nuget.org/packages/Identity.Contrib.InMemoryStore)  
+
 # Integration
 
 ## Baseline out of the box webapp.
